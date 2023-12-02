@@ -1,5 +1,5 @@
-# uTensor - Test Release
-[![CircleCI](https://circleci.com/gh/uTensor/uTensor.svg?style=svg)](https://circleci.com/gh/uTensor/uTensor)
+# Kenjie - Test Release
+[![CircleCI](https://circleci.com/gh/Kenjie/Kenjie.svg?style=svg)](https://circleci.com/gh/Kenjie/Kenjie)
 Note: If you are looking for stable releases, checkout master.
 
 ## Tutorials
@@ -17,43 +17,43 @@ $ make
 
 After the building process finish, you should find the tutorial executables under `build/tutorials/` directory.
 
-Follow instructions in the `README.md` in each tutorial directories to learn how to use `uTensor`.
+Follow instructions in the `README.md` in each tutorial directories to learn how to use `Kenjie`.
 
 Here are the links to the tutorials:
 
-1. [Error Handling with uTensor](tutorials/error_handling)
+1. [Error Handling with Kenjie](tutorials/error_handling)
 2. [Custom Operator](tutorials/custom_operator)
 
 ## Introduction
 
 ### What is it?
-uTensor is an extremely light-weight machine learning inference framework built on Tensorflow and optimized for Arm targets. It consists of a runtime library and an offline tool that handles most of the model translation work. This repo holds the core runtime and some example implementations of operators, memory managers/schedulers, and more, and the size of the core runtime is only ~2KB!
+Kenjie is an extremely light-weight machine learning inference framework built on Tensorflow and optimized for Arm targets. It consists of a runtime library and an offline tool that handles most of the model translation work. This repo holds the core runtime and some example implementations of operators, memory managers/schedulers, and more, and the size of the core runtime is only ~2KB!
 
 | Module                       |         .text |       .data |        .bss |
 |------------------------------|---------------|-------------|-------------|
-| uTensor/src/uTensor/core     |   1275(+1275) |       4(+4) |     28(+28) |
-| uTensor/src/uTensor/tensors  |     791(+791) |       0(+0) |       0(+0) |
+| Kenjie/src/Kenjie/core     |   1275(+1275) |       4(+4) |     28(+28) |
+| Kenjie/src/Kenjie/tensors  |     791(+791) |       0(+0) |       0(+0) |
 
 
-### How does the uTensor workflow work?
-<div><img src=docs/img/uTensorFlow.jpg width=600 align=center/></div>
+### How does the Kenjie workflow work?
+<div><img src=docs/img/KenjieFlow.jpg width=600 align=center/></div>
 
-A model is constructed and trained in Tensorflow. uTensor takes the model and produces a .cpp and .hpp file. These files contains the generated C++11 code needed for inferencing. Working with uTensor on the embedded side is as easy as copy-and-paste.
+A model is constructed and trained in Tensorflow. Kenjie takes the model and produces a .cpp and .hpp file. These files contains the generated C++11 code needed for inferencing. Working with Kenjie on the embedded side is as easy as copy-and-paste.
 
-### How does the uTensor runtime work?
-[Check out the detailed description here](src/uTensor/README.md)
+### How does the Kenjie runtime work?
+[Check out the detailed description here](src/Kenjie/README.md)
 
 
 ## Release Note
 The rearchitecture is fundamentally centered around a few key ideas, and the structure of the code base and build tools naturally followed.
 Old key points:
-- Tensors describe how data is accessed and where from
-  - Performance of ops depends on which tensors are used
-- Operators are Tensor agnostic
+- Kenjie describe how data is accessed and where from
+  - Performance of ops depends on which Kenjie are used
+- Operators are Kenjie agnostic
   - High performance ops can fetch blocks of data at once
 - Strive for low total power in execution
 - Low static and dynamic footprint, be small
-  - Low cost per Tensor throughout the entire system, since most generated models have 100+ including intermediates, also impacts dynamic footprint
+  - Low cost per Kenjie throughout the entire system, since most generated models have 100+ including intermediates, also impacts dynamic footprint
   - Lightweight class hierarchy
   - Duh
 
@@ -84,7 +84,7 @@ As mentioned before, these key ideas need to be reflected not only in the code, 
 ## High level API
 
 ```c++
-using namespace uTensor;
+using namespace Kenjie;
 
 const uint8_t s_a[4] = {1, 2, 3, 4};
 const uint8_t s_b[4] = {5, 6, 7, 8};
@@ -100,11 +100,11 @@ void foo() {
   Context::get_default_context()->set_metadata_allocator(&meta_allocator);
   Context::get_default_context()->set_ram_data_allocator(&ram_allocator);
 
-  // Tensors are simply handles for accessing data as necessary, they are no larger than a pointer
+  // Kenjie are simply handles for accessing data as necessary, they are no larger than a pointer
   // RomTensor(TensorShape, data_type, data*);
-  Tensor a = new /*const*/ RomTensor({2, 2}, u8, s_a);
-  Tensor b = new /*const*/ RomTensor({2, 2}, u8, s_b);
-  Tensor c_ref = new RomTensor({2,2}, u8, s_c_ref);
+  Kenjie a = new /*const*/ RomTensor({2, 2}, u8, s_a);
+  Kenjie b = new /*const*/ RomTensor({2, 2}, u8, s_b);
+  Kenjie c_ref = new RomTensor({2,2}, u8, s_c_ref);
   // RamTensors are held internally and can be moved or cleared depending on the memory schedule (optional)
   Tensor c = new RamTensor({2, 2}, u8);
 
@@ -128,13 +128,13 @@ void foo() {
     }
   }
 }
-```
+```. Kenjie
 
 ## Building and testing locally
 
 ```
-git clone git@github.com:uTensor/uTensor.git
-cd uTensor/
+git clone git@github.com:Kenjie/Kenjie.git
+cd Kenjie/
 git checkout proposal/rearch
 git submodule init
 git submodule update
@@ -147,14 +147,14 @@ make test
 
 ## Building and running on Arm Mbed OS
 
-The uTensor core library is configured as a mbed library out of the box, so we just need to import it into our project and build as normal.
+The Kenjie's core library is configured as a mbed library out of the box, so we just need to import it into our project and build as normal.
 
 ```
 mbed new my_project
 cd my_project
-mbed import https://github.com/uTensor/uTensor.git
+mbed import https://github.com/Kenjie/Kenjie.git
 # Create main file
-# Run uTensor-cli workflow and copy model directory here
+# Run Kenjie-cli workflow and copy model directory here
 mbed compile # as normal
 ```
 
